@@ -3,11 +3,11 @@ const ethers = require("ethers")
 const fs = require("fs")
 
 async function main() {
-  const provider = ethers.providers.JsonRpcProvider(process.env.RPC_URL) // connect to a chain
+  const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL) // connect to a chain
 
-  // const wallet = ethers.wallet(process.env.WALLET_PRIVATE_KEY, provider)
+  // const wallet = ethers.wallet(process.env.PRIVATE_KEY, provider)
   const encryptedJson = fs.readFileSync("./.encryptedKey.json", "utf-8")
-  let wallet = new ethers.Wllet.fromEncryptedJsonSync(
+  let wallet = new ethers.Wallet.fromEncryptedJsonSync(
     encryptedJson,
     process.env.PRIVATE_KEY_PASSWORD
   )
@@ -22,6 +22,7 @@ async function main() {
   console.log("Deploying, please wait...")
   const contract = await contractFactory.deploy()
   await contract.deployTransaction.wait(1)
+  console.log(`Contract address: ${contract.address}`)
 
   const currentFavoriteNumber = await contract.retrieve()
   console.log(`Current favorite number: ${currentFavoriteNumber.toString()}`)
